@@ -11,6 +11,7 @@ import {
   LogOutButton,
   Icon
 } from './styles';
+import Header from '../../components/Header';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -24,26 +25,29 @@ export default function Profile() {
   let firstLetter = user.name.substr(0, 1);
 
   return (
-    <Container>
+    <>
+      <Header />
 
-      <ProfileImage>
-        <ProfileImageText>{firstLetter}</ProfileImageText>
-      </ProfileImage>
+      <Container>
+        <ProfileImage>
+          <ProfileImageText>{firstLetter}</ProfileImageText>
+        </ProfileImage>
 
-      <ProfileInfo>
-        <ProfileName>{user && user.name}</ProfileName>
-        <ProfileEmail>{user && user.email}</ProfileEmail>
-      </ProfileInfo>
+        <ProfileInfo>
+          <ProfileName>{user && user.name}</ProfileName>
+          <ProfileEmail>{user && user.email}</ProfileEmail>
+        </ProfileInfo>
 
-      <RegisterButton activeOpacity={0.7} onPress={() => navigation.navigate('Registrar')}>
-        <ButtonText>Registrar Gastos</ButtonText>
-      </RegisterButton>
+        <RegisterButton activeOpacity={0.7} onPress={() => navigation.navigate('Registrar')}>
+          <ButtonText>Registrar Gastos</ButtonText>
+        </RegisterButton>
 
-      <LogOutButton activeOpacity={0.7} onPress={() => signOut()}>
-        <ButtonText>Sair</ButtonText>
-        <Icon name='log-out' />
-      </LogOutButton>
+        <LogOutButton activeOpacity={0.7} onPress={() => signOut()}>
+          <ButtonText>Sair</ButtonText>
+          <Icon name='log-out' />
+        </LogOutButton>
 
-    </Container>
+      </Container>
+    </>
   );
 }

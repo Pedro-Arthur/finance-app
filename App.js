@@ -4,7 +4,12 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 
 import AppLoading from 'expo-app-loading';
-import { useFonts, Jost_400Regular, Jost_600SemiBold } from '@expo-google-fonts/jost';
+import {
+  useFonts,
+  Jost_400Regular,
+  Jost_600SemiBold,
+  Jost_400Regular_Italic
+} from '@expo-google-fonts/jost';
 
 import colors from './src/styles/colors';
 import Routes from './src/routes';
@@ -16,7 +21,8 @@ LogBox.ignoreAllLogs();
 export default function App() {
   let [fontsLoaded] = useFonts({
     Jost_400Regular,
-    Jost_600SemiBold
+    Jost_600SemiBold,
+    Jost_400Regular_Italic
   });
 
   if (!fontsLoaded) {
@@ -26,9 +32,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <StatusBar backgroundColor={colors.two} barStyle='light-content' />
 
+        <StatusBar backgroundColor={colors.two} barStyle='light-content' />
         <Routes />
+
       </AuthProvider>
     </NavigationContainer>
   );

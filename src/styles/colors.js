@@ -7,7 +7,8 @@ const colors = {
   six: '#171717',
   seven: '#000',
   eight: '#DDD',
-  nine: '#C62C36'
+  nine: '#C62C36',
+  ten: 'rgba(0, 0, 0, 0.02)',
 };
 
 export default colors;
