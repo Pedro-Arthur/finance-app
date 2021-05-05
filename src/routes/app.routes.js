@@ -1,17 +1,40 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Home from '../pages/Home';
+import Profile from '../pages/Profile';
+import New from '../pages/New';
 
-const AppStack = createStackNavigator();
+import colors from '../styles/colors';
+import fonts from '../styles/fonts';
+
+const AppDrawer = createDrawerNavigator();
 
 function AppRoutes() {
   return (
-    <AppStack.Navigator>
+    <AppDrawer.Navigator
+      drawerStyle={{
+        backgroundColor: colors.six
+      }}
+      drawerContentOptions={{
+        labelStyle: {
+          fontFamily: fonts.semiBold
+        },
+        activeTintColor: colors.one,
+        activeBackgroundColor: colors.five,
+        inactiveBackgroundColor: colors.seven,
+        inactiveTintColor: colors.eight,
+        itemStyle: {
+          marginVertical: 5
+        }
+      }}
+    >
 
-      <AppStack.Screen name="Home" component={Home} />
+      <AppDrawer.Screen name="Home" component={Home} />
+      <AppDrawer.Screen name="Perfil" component={Profile} />
+      <AppDrawer.Screen name="Registrar" component={New} />
 
-    </AppStack.Navigator>
+    </AppDrawer.Navigator>
   );
 }
 
