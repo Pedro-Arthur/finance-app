@@ -1,10 +1,11 @@
-import * as firebase from 'firebase';
-import "firebase/auth";
-import "firebase/firestore";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 let firebaseConfig = {
   apiKey: "AIzaSyAH1fms9Dakkdy7AY3U70eDtbrGF0T1bBk",
   authDomain: "financeapp-2f87c.firebaseapp.com",
+  databaseURL: "https://financeapp-2f87c-default-rtdb.firebaseio.com",
   projectId: "financeapp-2f87c",
   storageBucket: "financeapp-2f87c.appspot.com",
   messagingSenderId: "864283686465",

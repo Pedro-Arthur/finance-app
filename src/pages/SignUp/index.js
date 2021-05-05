@@ -2,40 +2,32 @@ import React, { useState, useContext } from 'react';
 import {
   Background,
   Container,
-  Logo,
   InputArea,
   Input,
   PasswordInput,
   SubmitButton,
   SubmitText,
-  Register,
-  RegisterButton,
-  RegisterText,
-  RegisterLinkText,
   Icon,
   PasswordArea,
   IconButton
-} from './styles';
+} from '../SignIn/styles';
 import { Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+
 import { AuthContext } from '../../contexts/auth';
 
-import logoImg from '../../assets/Logo.png';
+export default function SignUp() {
 
-export default function SignIn() {
-
-  const navigation = useNavigation();
-
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [iconName, setIconName] = useState('eye');
   const [isSecure, setIsSecure] = useState(true);
 
-  const { signIn } = useContext(AuthContext);
+  const { signUp } = useContext(AuthContext);
 
-  function handleLogin() {
-    signIn(email, password);
+  function handleSignUp() {
+    signUp(email, password, name);
   }
 
   function secureControl() {
@@ -53,9 +45,15 @@ export default function SignIn() {
     <Background>
       <Container behavior={Platform.OS === 'ios' ? 'padding' : ''} enabled >
 
-        <Logo source={logoImg} />
-
         <InputArea>
+          <Input
+            placeholder='Nome'
+            maxLength={100}
+            value={name}
+            autoCapitalize='words'
+            onChangeText={(text) => setName(text)}
+          />
+
           <Input
             placeholder='E-mail'
             autoCorrect={false}
@@ -82,17 +80,9 @@ export default function SignIn() {
 
         </InputArea>
 
-        <SubmitButton activeOpacity={0.7} onPress={handleLogin}>
-          <SubmitText>Acessar</SubmitText>
+        <SubmitButton activeOpacity={0.7} onPress={handleSignUp}>
+          <SubmitText>Cadastrar</SubmitText>
         </SubmitButton>
-
-        <Register>
-          <RegisterText>Não tem conta?</RegisterText>
-
-          <RegisterButton activeOpacity={0.7} onPress={() => navigation.navigate('SignUp')}>
-            <RegisterLinkText> Crie aqui </RegisterLinkText>
-          </RegisterButton>
-        </Register>
 
       </Container>
     </Background>

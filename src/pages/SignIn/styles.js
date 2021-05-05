@@ -25,7 +25,7 @@ export const InputArea = styled.View`
   width: 90%;
 `;
 
-export const EmailInput = styled.TextInput.attrs({
+export const Input = styled.TextInput.attrs({
   placeholderTextColor: colors.four
 })`
   background-color: ${colors.three};
@@ -50,7 +50,7 @@ export const PasswordInput = styled.TextInput.attrs({
 
 export const Icon = styled(Feather)`
   font-size: ${metrics.large};
-  color: ${colors.one};
+  color: ${colors.four};
 `;
 
 export const PasswordArea = styled.View`
