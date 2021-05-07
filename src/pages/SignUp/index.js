@@ -12,8 +12,11 @@ import {
   IconButton
 } from '../SignIn/styles';
 import { Platform } from 'react-native';
+import { Indicator } from '../../components/Loading/styles';
+import ModalComponent from '../../components/Modal';
 
 import { AuthContext } from '../../contexts/auth';
+import colors from '../../styles/colors';
 
 export default function SignUp() {
 
@@ -24,10 +27,18 @@ export default function SignUp() {
   const [iconName, setIconName] = useState('eye');
   const [isSecure, setIsSecure] = useState(true);
 
-  const { signUp } = useContext(AuthContext);
+  const { signUp, authLoading, authError, modalVisible2, setModalVisible2 } = useContext(AuthContext);
+
+  const [modalVisible3, setModalVisible3] = useState(false);
 
   function handleSignUp() {
-    signUp(email, password, name);
+    if (!name || name.replace(/\s/g, "") === "") {
+      setModalVisible3(true);
+      return;
+    }
+    else {
+      signUp(email, password, name);
+    }
   }
 
   function secureControl() {
@@ -81,8 +92,21 @@ export default function SignUp() {
         </InputArea>
 
         <SubmitButton activeOpacity={0.7} onPress={handleSignUp}>
-          <SubmitText>Cadastrar</SubmitText>
+          {authLoading ? <Indicator size='small' color={colors.one} /> : <SubmitText>Cadastrar</SubmitText>}
         </SubmitButton>
+
+        <ModalComponent
+          visible={modalVisible2}
+          modal3={true}
+          error={authError}
+          actionButtonOk={() => setModalVisible2(false)}
+        />
+
+        <ModalComponent
+          visible={modalVisible3}
+          modal2={true}
+          actionButtonOk={() => setModalVisible3(false)}
+        />
 
       </Container>
     </Background>

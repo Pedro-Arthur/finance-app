@@ -1,44 +1,47 @@
 import React, { useState, useContext } from 'react';
 import { Container } from './styles';
-import { Keyboard, Alert } from 'react-native';
+import { Keyboard } from 'react-native';
 import { Input, SubmitButton, SubmitText, InputArea } from '../../pages/SignIn/styles';
 
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
 import firebase from '../../services/firebase';
 import { AuthContext } from '../../contexts/auth';
+import colors from '../../styles/colors';
 
 import Header from '../../components/Header';
 import Picker from '../../components/Picker';
+import { Indicator } from '../../components/Loading/styles';
+import ModalComponent from '../../components/Modal';
 
 export default function New() {
 
   const [value, setValue] = useState('');
   const [type, setType] = useState('receita');
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
   const { user: client } = useContext(AuthContext);
 
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+
   function handleSubmit() {
     Keyboard.dismiss();
 
     if (isNaN(parseFloat(value))) {
-      Alert.alert('Ops!', 'Preencha todos os campos!');
+      setModalVisible1(true);
       return;
     }
-
-    Alert.alert(
-      'Confirmando dados',
-      `Tipo: ${type}\nValor: ${parseFloat(value)}`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Continuar', onPress: () => handleAdd() }
-      ]
-    )
+    else {
+      setModalVisible2(true);
+    }
   }
 
   async function handleAdd() {
+    setModalVisible2(false);
+    setLoading(true);
     let uid = client.uid;
 
     let key = await firebase.database().ref('historic').child(uid).push().key;
@@ -61,6 +64,7 @@ export default function New() {
 
     Keyboard.dismiss();
     setValue('');
+    setLoading(false);
     navigation.navigate('Home');
 
   }
@@ -86,8 +90,23 @@ export default function New() {
         </InputArea>
 
         <SubmitButton activeOpacity={0.7} onPress={() => handleSubmit()}>
-          <SubmitText>Registrar</SubmitText>
+          {loading ? <Indicator size='small' color={colors.one} /> : <SubmitText>Registrar</SubmitText>}
         </SubmitButton>
+
+        <ModalComponent
+          visible={modalVisible1}
+          modal2={true}
+          actionButtonOk={() => setModalVisible1(false)}
+        />
+
+        <ModalComponent
+          visible={modalVisible2}
+          modal1={true}
+          value={value}
+          type={type}
+          actionButtonCancel={() => setModalVisible2(false)}
+          actionButtonOk={() => handleAdd()}
+        />
 
       </Container>
     </>

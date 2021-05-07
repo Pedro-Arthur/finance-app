@@ -19,8 +19,11 @@ import {
 import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../contexts/auth';
+import colors from '../../styles/colors';
 
 import logoImg from '../../assets/Logo.png';
+import { Indicator } from '../../components/Loading/styles';
+import ModalComponent from '../../components/Modal';
 
 export default function SignIn() {
 
@@ -32,7 +35,7 @@ export default function SignIn() {
   const [iconName, setIconName] = useState('eye');
   const [isSecure, setIsSecure] = useState(true);
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn, authLoading, modalVisible1, setModalVisible1, authError } = useContext(AuthContext);
 
   function handleLogin() {
     signIn(email, password);
@@ -83,7 +86,7 @@ export default function SignIn() {
         </InputArea>
 
         <SubmitButton activeOpacity={0.7} onPress={handleLogin}>
-          <SubmitText>Acessar</SubmitText>
+          {authLoading ? <Indicator size='small' color={colors.one} /> : <SubmitText>Acessar</SubmitText>}
         </SubmitButton>
 
         <Register>
@@ -93,6 +96,13 @@ export default function SignIn() {
             <RegisterLinkText> Crie aqui </RegisterLinkText>
           </RegisterButton>
         </Register>
+
+        <ModalComponent
+          visible={modalVisible1}
+          modal3={true}
+          error={authError}
+          actionButtonOk={() => setModalVisible1(false)}
+        />
 
       </Container>
     </Background>

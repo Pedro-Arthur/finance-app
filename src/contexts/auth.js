@@ -7,6 +7,11 @@ export const AuthContext = createContext({});
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
     async function loadStorage() {
@@ -25,6 +30,7 @@ function AuthProvider({ children }) {
 
   // Função para logar o usuário.
   async function signIn(email, password) {
+    setAuthLoading(true);
     await firebase.auth().signInWithEmailAndPassword(email, password)
       .then(async (value) => {
         let uid = value.user.uid;
@@ -35,18 +41,21 @@ function AuthProvider({ children }) {
               name: snapshot.val().name,
               email: value.user.email,
             };
-
+            setAuthLoading(false);
             setUser(data);
             storageUser(data);
           })
       })
       .catch((error) => {
-        alert(error.code);
+        setAuthLoading(false);
+        setModalVisible1(true);
+        setAuthError(error.code);
       });
   }
 
   // Cadastrar usuário.
   async function signUp(email, password, name) {
+    setAuthLoading(true);
     await firebase.auth().createUserWithEmailAndPassword(email, password)
       .then(async (value) => {
         let uid = value.user.uid;
@@ -60,20 +69,25 @@ function AuthProvider({ children }) {
               name: name,
               email: value.user.email,
             };
+            setAuthLoading(false);
             setUser(data);
             storageUser(data);
           })
       })
       .catch((error) => {
-        alert(error.code);
+        setAuthLoading(false);
+        setModalVisible2(true);
+        setAuthError(error.code);
       });
   }
 
   async function signOut() {
+    setAuthLoading(true);
     await firebase.auth().signOut();
     await AsyncStorage.clear()
       .then(() => {
         setUser(null);
+        setAuthLoading(false);
       })
   }
 
@@ -82,7 +96,20 @@ function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{
+      signed: !!user,
+      user,
+      loading,
+      authLoading,
+      authError,
+      modalVisible1,
+      modalVisible2,
+      setModalVisible1,
+      setModalVisible2,
+      signUp,
+      signIn,
+      signOut
+    }}>
       {children}
     </AuthContext.Provider>
   );

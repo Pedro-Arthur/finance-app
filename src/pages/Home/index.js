@@ -13,10 +13,11 @@ import { format } from 'date-fns';
 
 import Header from '../../components/Header';
 import HistoricList from '../../components/HistoricList';
+import Loading from '../../components/Loading';
 
 export default function Home() {
 
-  const [historic, setHistoric] = useState([]);
+  const [historic, setHistoric] = useState(['null']);
   const [accountBalance, setAccountBalance] = useState(0);
 
   const { user } = useContext(AuthContext);
@@ -50,13 +51,23 @@ export default function Home() {
     loadList();
   }, []);
 
+  let m1 = accountBalance.toFixed(2);
+  let m2 = m1.replace('.', ',');
+  let m3 = m2.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+
+  if (historic == 'null') {
+    return (
+      <Loading />
+    );
+  }
+
   return (
     <>
       <Header />
 
       <Container>
         <UserName>{user && user.name}</UserName>
-        <UserAccountBalance>R$ {accountBalance.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')}</UserAccountBalance>
+        <UserAccountBalance>R$ {m3}</UserAccountBalance>
 
         <LatestMovesTitle>Últimas Movimentações</LatestMovesTitle>
 

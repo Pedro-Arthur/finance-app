@@ -8,6 +8,12 @@ import {
 } from './styles';
 
 export default function HistoricList({ data }) {
+
+  let m1 = parseFloat(data.value);
+  let m2 = m1.toFixed(2);
+  let m3 = m2.replace('.', ',');
+  let m4 = m3.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+
   return (
     <Container>
       <FinanceType type={data.type}>
@@ -15,7 +21,7 @@ export default function HistoricList({ data }) {
         <FinanceTypeText>{data.type}</FinanceTypeText>
       </FinanceType>
 
-      <FinanceValue>R$ {data.value}</FinanceValue>
+      <FinanceValue>R$ {m4}</FinanceValue>
     </Container>
   );
 }
