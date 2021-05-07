@@ -17,14 +17,15 @@ export default function Picker({ onChange, type }) {
 
   const [showPickerModal, setShowPickerModal] = useState(false);
 
-  function itemSelected1() {
-    onChange('receita');
-    setShowPickerModal(false);
-  }
-
-  function itemSelected2() {
-    onChange('despesa');
-    setShowPickerModal(false);
+  function itemSelected(selectedType) {
+    if (selectedType === 'Receita') {
+      onChange('receita');
+      setShowPickerModal(false);
+    }
+    else {
+      onChange('despesa');
+      setShowPickerModal(false);
+    }
   }
 
   return (
@@ -38,11 +39,11 @@ export default function Picker({ onChange, type }) {
 
       <Modal isVisible={showPickerModal}>
         <PickerModal>
-          <PickerOption activeOpacity={0.7} onPress={() => itemSelected1()}>
+          <PickerOption activeOpacity={0.7} onPress={() => itemSelected('Receita')}>
             <PickerOptionValue>Receita</PickerOptionValue>
           </PickerOption>
           <PickerLine />
-          <PickerOption activeOpacity={0.7} onPress={() => itemSelected2()}>
+          <PickerOption activeOpacity={0.7} onPress={() => itemSelected('Despesa')}>
             <PickerOptionValue>Despesa</PickerOptionValue>
           </PickerOption>
           <PickerLine />
