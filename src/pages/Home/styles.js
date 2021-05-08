@@ -30,6 +30,19 @@ export const LatestMovesTitle = styled.Text`
   margin: 0 0 10px 15px;
 `;
 
+export const NoResults = styled.Text`
+  font-size: ${metrics.medium};
+  color: ${colors.two};
+  font-family: ${fonts.regular};
+`;
+
+export const Background = styled.View`
+  background-color: ${colors.one};
+  border-radius: 7px;
+  margin: 0 15px;
+  padding: 10px;
+`;
+
 export const List = styled.FlatList`
   background-color: ${colors.one};
   border-top-left-radius: 15px;

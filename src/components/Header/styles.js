@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import metrics from '../../styles/metrics';
 import colors from '../../styles/colors';
 
-export const Container = styled.View`
+export const Container = styled.SafeAreaView`
   width: 100%;
   padding: 15px;
   background-color: ${colors.two};

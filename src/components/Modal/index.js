@@ -84,6 +84,39 @@ const ModalComponent = props => {
         </ModalView>
       )}
 
+      {props.modal4 && (
+        <ModalView>
+          <Row>
+            <ErrorIcon name='alert-circle' />
+            <ModalTitleError>Ops!</ModalTitleError>
+          </Row>
+          <ModalSubtitle>Você não pode excluir um registro antigo.</ModalSubtitle>
+          <Buttons>
+            <ModalButtonError activeOpacity={0.7} onPress={props.actionButtonOk} >
+              <ButtonText>Ok</ButtonText>
+            </ModalButtonError>
+          </Buttons>
+        </ModalView>
+      )}
+
+      {props.modal5 && (
+        <ModalView>
+          <Row>
+            <ErrorIcon name='alert-circle' />
+            <ModalTitleError>Atenção!</ModalTitleError>
+          </Row>
+          <ModalSubtitle>Você deseja realmente excluir?</ModalSubtitle>
+          <Buttons>
+            <ModalButtonCancel activeOpacity={0.7} onPress={props.actionButtonCancel}>
+              <ButtonText>Cancelar</ButtonText>
+            </ModalButtonCancel>
+            <ModalButtonOk activeOpacity={0.7} onPress={props.actionButtonOk}>
+              <ButtonText>Ok</ButtonText>
+            </ModalButtonOk>
+          </Buttons>
+        </ModalView>
+      )}
+
     </Modal>
   )
 }

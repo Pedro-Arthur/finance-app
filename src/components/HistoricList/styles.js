@@ -5,15 +5,14 @@ import metrics from '../../styles/metrics';
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
-export const Container = styled.View.attrs({
-  elevation: 5
-})`
+export const Container = styled.TouchableOpacity`
   width: 90%;
   margin: 0 5% 15px;
   box-shadow: 2px 2px ${colors.three};
   background-color: ${colors.one};
   border-radius: 7px;
   padding: 10px;
+  elevation: 5;
 `;
 
 export const Icon = styled(Feather)`

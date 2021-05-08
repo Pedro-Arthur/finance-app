@@ -4,24 +4,71 @@ import {
   UserName,
   UserAccountBalance,
   LatestMovesTitle,
-  List
+  List,
+  NoResults,
+  Background
 } from './styles';
 
 import { AuthContext } from '../../contexts/auth';
 import firebase from '../../services/firebase';
-import { format } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 
 import Header from '../../components/Header';
 import HistoricList from '../../components/HistoricList';
 import Loading from '../../components/Loading';
+import ModalComponent from '../../components/Modal';
 
 export default function Home() {
 
   const [historic, setHistoric] = useState(['null']);
   const [accountBalance, setAccountBalance] = useState(0);
 
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+
   const { user } = useContext(AuthContext);
   const uid = user && user.uid;
+
+  function handleDelete(data) {
+
+    const [itemDay, itemMonth, itemYear] = data.date.split('/');
+    const itemDate = new Date(`${itemYear}/${itemMonth}/${itemDay}`);
+    console.log(itemDate);
+
+    const todayFormat = format(new Date(), 'dd/MM/yyyy');
+    const [todayDay, todayMonth, todayYear] = todayFormat.split('/');
+    const todayDate = new Date(`${todayYear}/${todayMonth}/${todayDay}`);
+    console.log(todayDate);
+
+    if (isBefore(itemDate, todayDate)) {
+      setModalVisible1(true);
+    }
+    else {
+      setModalVisible2(true);
+      setData(data);
+    }
+  }
+
+  async function handleDeleteSuccess(data) {
+    setModalVisible2(false);
+    setLoading(true);
+    await firebase.database().ref('historic')
+      .child(uid).child(data.key).remove()
+      .then(async () => {
+        let currentBalance = accountBalance;
+        data.type === 'despesa' ? currentBalance += parseFloat(data.value) : currentBalance -= parseFloat(data.value);
+
+        await firebase.database().ref('users').child(uid).child('accountBalance').set(currentBalance);
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      })
+  }
 
   useEffect(() => {
     async function loadList() {
@@ -31,7 +78,7 @@ export default function Home() {
 
       await firebase.database().ref('historic')
         .child(uid)
-        .orderByChild('date').equalTo(format(new Date, 'dd/MM/yy'))
+        .orderByChild('date').equalTo(format(new Date, 'dd/MM/yyyy'))
         .limitToLast(10).on('value', (snapshot) => {
           setHistoric([]);
 
@@ -39,7 +86,8 @@ export default function Home() {
             let list = {
               key: childItem.key,
               type: childItem.val().type,
-              value: childItem.val().value
+              value: childItem.val().value,
+              date: childItem.val().date
             };
 
             setHistoric(oldArray => [...oldArray, list].reverse());
@@ -55,7 +103,7 @@ export default function Home() {
   let m2 = m1.replace('.', ',');
   let m3 = m2.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 
-  if (historic == 'null') {
+  if (historic == 'null' || loading) {
     return (
       <Loading />
     );
@@ -71,14 +119,34 @@ export default function Home() {
 
         <LatestMovesTitle>Últimas Movimentações</LatestMovesTitle>
 
-        <List
-          contentContainerStyle={{ paddingTop: 15 }}
-          showsVerticalScrollIndicator={false}
-          data={historic}
-          keyExtractor={item => item.key}
-          renderItem={({ item }) => <HistoricList data={item} />}
-        />
+        {historic.length == 0 ? (
+          <Background>
+            <NoResults>Sem movimentações recentes...</NoResults>
+          </Background>
+        ) : (
+          <List
+            contentContainerStyle={{ paddingTop: 15 }}
+            showsVerticalScrollIndicator={false}
+            data={historic}
+            keyExtractor={item => item.key}
+            renderItem={({ item }) => <HistoricList data={item} deleteItem={handleDelete} />}
+          />
+        )
+        }
       </Container>
+
+      <ModalComponent
+        visible={modalVisible1}
+        modal4={true}
+        actionButtonOk={() => setModalVisible1(false)}
+      />
+
+      <ModalComponent
+        visible={modalVisible2}
+        modal5={true}
+        actionButtonCancel={() => setModalVisible2(false)}
+        actionButtonOk={() => handleDeleteSuccess(data)}
+      />
     </>
   );
 }
