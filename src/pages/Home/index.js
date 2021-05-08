@@ -6,7 +6,10 @@ import {
   LatestMovesTitle,
   List,
   NoResults,
-  Background
+  Background,
+  CalendarButton,
+  Icon,
+  CalendarBox
 } from './styles';
 
 import { AuthContext } from '../../contexts/auth';
@@ -17,16 +20,19 @@ import Header from '../../components/Header';
 import HistoricList from '../../components/HistoricList';
 import Loading from '../../components/Loading';
 import ModalComponent from '../../components/Modal';
+import DatePicker from '../../components/DatePicker';
 
 export default function Home() {
 
   const [historic, setHistoric] = useState(['null']);
   const [accountBalance, setAccountBalance] = useState(0);
+  const [newDate, setNewDate] = useState(new Date());
 
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [show, setShow] = useState(false);
 
   const { user } = useContext(AuthContext);
   const uid = user && user.uid;
@@ -35,12 +41,10 @@ export default function Home() {
 
     const [itemDay, itemMonth, itemYear] = data.date.split('/');
     const itemDate = new Date(`${itemYear}/${itemMonth}/${itemDay}`);
-    console.log(itemDate);
 
     const todayFormat = format(new Date(), 'dd/MM/yyyy');
     const [todayDay, todayMonth, todayYear] = todayFormat.split('/');
     const todayDate = new Date(`${todayYear}/${todayMonth}/${todayDay}`);
-    console.log(todayDate);
 
     if (isBefore(itemDate, todayDate)) {
       setModalVisible1(true);
@@ -49,6 +53,19 @@ export default function Home() {
       setModalVisible2(true);
       setData(data);
     }
+  }
+
+  function handleShowPicker() {
+    setShow(true);
+  }
+
+  function handleClose() {
+    setShow(false);
+  }
+
+  const onChange = (date) => {
+    setShow(Platform.OS === 'ios');
+    setNewDate(date);
   }
 
   async function handleDeleteSuccess(data) {
@@ -78,7 +95,7 @@ export default function Home() {
 
       await firebase.database().ref('historic')
         .child(uid)
-        .orderByChild('date').equalTo(format(new Date, 'dd/MM/yyyy'))
+        .orderByChild('date').equalTo(format(newDate, 'dd/MM/yyyy'))
         .limitToLast(10).on('value', (snapshot) => {
           setHistoric([]);
 
@@ -97,7 +114,7 @@ export default function Home() {
     }
 
     loadList();
-  }, []);
+  }, [newDate]);
 
   let m1 = accountBalance.toFixed(2);
   let m2 = m1.replace('.', ',');
@@ -117,7 +134,12 @@ export default function Home() {
         <UserName>{user && user.name}</UserName>
         <UserAccountBalance>R$ {m3}</UserAccountBalance>
 
-        <LatestMovesTitle>Últimas Movimentações</LatestMovesTitle>
+        <CalendarBox>
+          <CalendarButton activeOpacity={0.7} onPress={() => handleShowPicker()}>
+            <Icon name='calendar' />
+          </CalendarButton>
+          <LatestMovesTitle>Últimas Movimentações</LatestMovesTitle>
+        </CalendarBox>
 
         {historic.length == 0 ? (
           <Background>
@@ -133,6 +155,14 @@ export default function Home() {
           />
         )
         }
+
+        {show && (
+          <DatePicker
+            onClose={handleClose}
+            date={newDate}
+            onChange={onChange}
+          />
+        )}
       </Container>
 
       <ModalComponent

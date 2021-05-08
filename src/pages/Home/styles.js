@@ -4,6 +4,8 @@ import colors from '../../styles/colors';
 import metrics from '../../styles/metrics';
 import fonts from '../../styles/fonts';
 
+import { Feather } from '@expo/vector-icons';
+
 export const Container = styled.View`
   flex: 1;
   background-color: ${colors.two};
@@ -27,7 +29,6 @@ export const LatestMovesTitle = styled.Text`
   font-size: ${metrics.medium};
   color: ${colors.five};
   font-family: ${fonts.regular};
-  margin: 0 0 10px 15px;
 `;
 
 export const NoResults = styled.Text`
@@ -48,4 +49,18 @@ export const List = styled.FlatList`
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   margin: 0 15px;
+`;
+
+export const Icon = styled(Feather)`
+  font-size: ${metrics.large};
+  color: ${colors.five};
+`;
+
+export const CalendarButton = styled.TouchableOpacity`
+  margin-right: 10px;
+`;
+
+export const CalendarBox = styled.View`
+  flex-direction: row;
+  margin: 0 0 10px 15px;
 `;
